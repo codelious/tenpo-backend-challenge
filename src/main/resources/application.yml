@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: tenpo-backend-challenge
+
+  # R2DBC is part of spring data to manage transactions with webflux
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/calculation_db
+    username: user
+    password: password
+
+  # Flyway allows to create tables in the db when the service starts
+  flyway:
+    url: jdbc:postgresql://localhost:5432/calculation_db
+    enabled: true
+    locations: classpath:db/migration
+    user: user
+    password: password

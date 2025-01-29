@@ -1,5 +1,6 @@
 package com.tenpo.tenpobackendchallenge.service;
 
+import com.tenpo.tenpobackendchallenge.config.PercentageApiProperties;
 import com.tenpo.tenpobackendchallenge.dto.PercentageResponseDto;
 import com.tenpo.tenpobackendchallenge.exception.GetPercentageException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,18 +16,21 @@ import java.time.Duration;
 @Slf4j
 public class PercentageServiceImpl implements PercentageService {
 
-    public static final String URL = "https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io";
-    public static final String PERCENTAGE_URI = "/percentage";
     public static final String ERROR_AL_OBTENER_EL_PORCENTAJE_DESPUES_DE_REINTENTAR = "Error al obtener el porcentaje después de reintentar";
     public static final String NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_EL_SERVICIO_EXTERNO_NI_DESDE_LA_CACHE = "No se pudo obtener el porcentaje desde el servicio externo ni desde la caché.";
 
     private final WebClient webClient;
     private final PercentageRedisCacheService percentageRedisCacheService;
+    private final PercentageApiProperties percentageApiProperties;
 
     @Autowired
-    public PercentageServiceImpl(WebClient.Builder webClientBuilder, PercentageRedisCacheService percentageRedisCacheService) {
-        this.webClient = webClientBuilder.baseUrl(URL).build();
+    public PercentageServiceImpl(WebClient.Builder webClientBuilder, PercentageRedisCacheService percentageRedisCacheService, PercentageApiProperties percentageApiProperties) {
+        this.percentageApiProperties = percentageApiProperties;
+        this.webClient = webClientBuilder.baseUrl(percentageApiProperties.getUrl()).build();
         this.percentageRedisCacheService = percentageRedisCacheService;
+
+        log.info("URL del servicio externo de porcentaje:{}", percentageApiProperties.getUrl());
+        log.info("URI del servicio externo de porcentaje:{}", percentageApiProperties.getUri());
     }
 
     @Override
@@ -38,7 +42,7 @@ public class PercentageServiceImpl implements PercentageService {
     }
 
     private Mono<PercentageResponseDto> fetchPercentageFromExternalService() {
-        return this.webClient.get().uri(PERCENTAGE_URI)
+        return this.webClient.get().uri(percentageApiProperties.getUri())
                 .retrieve()
                 .bodyToMono(PercentageResponseDto.class)
                 .doOnSubscribe(subscription -> log.info("Llamada al servicio externo iniciada"))

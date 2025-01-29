@@ -34,3 +34,8 @@ springdoc:
     urls:
       - url: /v3/api-docs
         name: Default API
+
+# Configuracion de la API que entrega el porcentaje para usar en el calculo
+percentage-api:
+  url: https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io
+  uri: /percentage

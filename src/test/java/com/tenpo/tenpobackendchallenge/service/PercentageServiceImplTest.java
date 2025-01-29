@@ -1,5 +1,6 @@
 package com.tenpo.tenpobackendchallenge.service;
 
+import com.tenpo.tenpobackendchallenge.config.PercentageApiProperties;
 import com.tenpo.tenpobackendchallenge.dto.PercentageResponseDto;
 import com.tenpo.tenpobackendchallenge.exception.GetPercentageException;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,14 +33,20 @@ class PercentageServiceImplTest {
     @Mock
     private PercentageRedisCacheService percentageRedisCacheService;
 
+    @Mock
+    private PercentageApiProperties percentageApiProperties;
+
     // @InjectMocks
     private PercentageServiceImpl percentageService;
-
     private PercentageResponseDto percentageResponse;
 
     @BeforeEach
     void setUp() {
         percentageResponse = new PercentageResponseDto(10.5);
+
+        // Configura los valores mockeados en PercentageApiProperties
+        when(percentageApiProperties.getUrl()).thenReturn("https://mockapi.com");
+        when(percentageApiProperties.getUri()).thenReturn("/percentage");
 
         // Simulación de WebClient.Builder para evitar el NullPointerException
         when(webClientBuilderMock.baseUrl(anyString())).thenReturn(webClientBuilderMock);
@@ -51,7 +58,7 @@ class PercentageServiceImplTest {
         when(requestHeadersUriSpecMock.retrieve()).thenReturn(responseSpecMock);
 
         // Instanciar manualmente el servicio con el WebClient mockeado
-        percentageService = new PercentageServiceImpl(webClientBuilderMock, percentageRedisCacheService);
+        percentageService = new PercentageServiceImpl(webClientBuilderMock, percentageRedisCacheService, percentageApiProperties);
     }
 
     @Test

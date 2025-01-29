@@ -15,12 +15,17 @@ import java.time.Duration;
 @Slf4j
 public class PercentageServiceImpl implements PercentageService {
 
+    public static final String URL = "https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io";
+    public static final String PERCENTAGE_URI = "/percentage";
+    public static final String ERROR_AL_OBTENER_EL_PORCENTAJE_DESPUES_DE_REINTENTAR = "Error al obtener el porcentaje después de reintentar";
+    public static final String NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_EL_SERVICIO_EXTERNO_NI_DESDE_LA_CACHE = "No se pudo obtener el porcentaje desde el servicio externo ni desde la caché.";
+
     private final WebClient webClient;
     private final PercentageRedisCacheService percentageRedisCacheService;
 
     @Autowired
     public PercentageServiceImpl(WebClient.Builder webClientBuilder, PercentageRedisCacheService percentageRedisCacheService) {
-        this.webClient = webClientBuilder.baseUrl("https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io").build();
+        this.webClient = webClientBuilder.baseUrl(URL).build();
         this.percentageRedisCacheService = percentageRedisCacheService;
     }
 
@@ -33,20 +38,20 @@ public class PercentageServiceImpl implements PercentageService {
     }
 
     private Mono<PercentageResponseDto> fetchPercentageFromExternalService() {
-        return this.webClient.get().uri("/percentage")
+        return this.webClient.get().uri(PERCENTAGE_URI)
                 .retrieve()
                 .bodyToMono(PercentageResponseDto.class)
                 .doOnSubscribe(subscription -> log.info("Llamada al servicio externo iniciada"))
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(500))
-                        .doBeforeRetry(retrySignal -> log.info("Reintentando... intento #{}", (retrySignal.totalRetries() + 1)))
+                        .doBeforeRetry(retrySignal -> log.info("Intento #{}", (retrySignal.totalRetries() + 1)))
                         .onRetryExhaustedThrow((spec, signal) ->
-                                new GetPercentageException("Error al obtener el porcentaje después de reintentar")))
+                                new GetPercentageException(ERROR_AL_OBTENER_EL_PORCENTAJE_DESPUES_DE_REINTENTAR)))
                 .doOnNext(percentage -> log.info("Respuesta obtenida del servicio externo: {}", percentage));
     }
 
     private Mono<PercentageResponseDto> cachePercentage(PercentageResponseDto percentage) {
         return percentageRedisCacheService.saveCachedPercentage(Mono.just(percentage))
-                .thenReturn(percentage); // Devuelve el porcentaje original tras almacenarlo
+                .thenReturn(percentage); // Devuelve el porcentaje original después de almacenarlo
     }
 
     private Mono<PercentageResponseDto> handleErrorWithCache(Throwable error) {
@@ -55,8 +60,8 @@ public class PercentageServiceImpl implements PercentageService {
     }
 
     private Throwable handleFinalError(Throwable error) {
-        log.error("No se pudo obtener el porcentaje desde el servicio externo ni desde la caché.");
-        return new GetPercentageException("No se pudo obtener el porcentaje desde el servicio externo ni desde la caché.");
+        log.error(NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_EL_SERVICIO_EXTERNO_NI_DESDE_LA_CACHE);
+        return new GetPercentageException(NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_EL_SERVICIO_EXTERNO_NI_DESDE_LA_CACHE);
     }
 
 }

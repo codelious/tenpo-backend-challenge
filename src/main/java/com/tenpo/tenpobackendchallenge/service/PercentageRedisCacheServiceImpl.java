@@ -14,6 +14,7 @@ import java.time.Duration;
 @Service
 public class PercentageRedisCacheServiceImpl implements PercentageRedisCacheService {
 
+    public static final String NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_REDIS = "No se pudo obtener el porcentaje desde Redis";
     private final ReactiveRedisTemplate<String, Object> redisTemplate;
     private static final String CACHE_KEY = "percentage";
 
@@ -37,7 +38,7 @@ public class PercentageRedisCacheServiceImpl implements PercentageRedisCacheServ
         return redisTemplate.opsForValue()
                 .get(CACHE_KEY)
                 .cast(PercentageResponseDto.class)
-                .switchIfEmpty(Mono.error(new GetPercentageException("No se pudo obtener el porcentaje desde Redis")))
+                .switchIfEmpty(Mono.error(new GetPercentageException(NO_SE_PUDO_OBTENER_EL_PORCENTAJE_DESDE_REDIS)))
                 .doOnNext(cachedPercentage -> log.info("Porcentaje recuperado de Redis: {}", cachedPercentage));
     }
 }

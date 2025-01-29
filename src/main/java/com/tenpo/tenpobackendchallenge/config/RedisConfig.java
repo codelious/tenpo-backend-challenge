@@ -25,7 +25,7 @@ public class RedisConfig {
                 .key(keySerializer) // Claves como String
                 .value(valueSerializer) // Valores como JSON
                 .hashKey(keySerializer) // Claves en hashes como String
-                .hashValue(valueSerializer) // Valores en hashes como JSON
+                .hashValue(valueSerializer) // Valores en hashes como JSON, aca se guarda el dto
                 .build();
 
         // ReactiveRedisTemplate con la configuración personalizada

@@ -72,7 +72,7 @@ public class RateLimitingFilter implements WebFilter {
     }
 
     private String getClientIdentifier(ServerWebExchange exchange) {
-        // Usa la dirección IP como identificador. Puedes cambiar esto según tus necesidades.
+        // Usa la dirección IP como identificador. Esto se podría cambiar para usar otro identificador
         return Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getAddress().getHostAddress();
     }
 

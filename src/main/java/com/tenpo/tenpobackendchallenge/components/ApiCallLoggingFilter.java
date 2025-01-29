@@ -64,7 +64,7 @@ public class ApiCallLoggingFilter implements WebFilter {
 
         ServerHttpResponse decoratedResponse = getDecoratedResponse(originalResponse, capturedBody);
 
-        // Continuar con la cadena y registrar los logs
+        // Continuar con chain y registrar los logs
         return chain.filter(exchange.mutate().response(decoratedResponse).build())
                 .doOnSuccess(done -> logRequest(exchange, timestamp, endpoint, parameters, capturedBody.toString()))
                 .doOnError(throwable -> logRequest(exchange, timestamp, endpoint, parameters, capturedBody.toString()));
@@ -76,7 +76,7 @@ public class ApiCallLoggingFilter implements WebFilter {
 
     @NotNull
     private ServerHttpResponse getDecoratedResponse(ServerHttpResponse originalResponse, StringBuilder capturedBody) {
-        // Decorar la respuesta para capturar el body
+        // Decorar la respuesta para capturar el body que se guardara en db
         // Si no es Flux ni Mono, procesar normalmente
         return new ServerHttpResponseDecorator(originalResponse) {
             @NotNull
@@ -118,7 +118,7 @@ public class ApiCallLoggingFilter implements WebFilter {
             capturedBody.append(chunk, 0, remainingSpace).append("...");
         }
 
-        // Retornar un nuevo DataBuffer para continuar la cadena
+        // Retornar un nuevo DataBuffer para continuar el chain
         return dataBuffer.factory().wrap(content);
     }
 
@@ -126,6 +126,7 @@ public class ApiCallLoggingFilter implements WebFilter {
         ServerHttpResponse response = exchange.getResponse();
         int httpStatus = response.getStatusCode() != null ? response.getStatusCode().value() : 500;
 
+        // poblar el registro de solicitud
         ApiCallLogDto logDto = new ApiCallLogDto();
         logDto.setTimestamp(timestamp);
         logDto.setEndpoint(endpoint);

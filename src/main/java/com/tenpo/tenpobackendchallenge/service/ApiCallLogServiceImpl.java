@@ -26,6 +26,7 @@ public class ApiCallLogServiceImpl implements ApiCallLogService {
 
     @Override
     public Flux<ApiCallLog> findAll(int page, int size) {
+        // un sistema de paginación básico, la primera pagina es 0
         return apiCallLogRepository.findAll()
                 .skip((long) page * size) // salta elementos de paginas anteriores
                 .take(size); // toma los elementos necesarios

@@ -7,8 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface ApiCallLogService {
     Mono<ApiCallLog> create(Mono<ApiCallLogDto> apiCallLogDto);
-    Mono<ApiCallLog> findById(Long apiCallLogId);
-    Mono<ApiCallLog> update(Long apiCallLogId, Mono<ApiCallLogDto> apiCallLogDto);
-    Mono<Void> delete(Long apiCallLogId);
-    Flux<ApiCallLog> findAll();
+    Flux<ApiCallLog> findAll(int page, int size);
 }

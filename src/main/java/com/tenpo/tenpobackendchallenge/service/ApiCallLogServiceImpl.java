@@ -25,26 +25,9 @@ public class ApiCallLogServiceImpl implements ApiCallLogService {
     }
 
     @Override
-    public Mono<ApiCallLog> findById(Long apiCallLogId) {
-        return apiCallLogRepository.findById(apiCallLogId);
-    }
-
-    @Override
-    public Mono<ApiCallLog> update(Long apiCallLogId, Mono<ApiCallLogDto> apiCallLogDto) {
-        return apiCallLogRepository.findById(apiCallLogId)
-                .flatMap(apiCallLog -> apiCallLogDto
-                        .map(ApiCallLogUtils::toApiCallLog)
-                        .doOnNext(a -> a.setId(apiCallLogId)))
-                .flatMap(apiCallLogRepository::save);
-    }
-
-    @Override
-    public Mono<Void> delete(Long apiCallLogId) {
-        return apiCallLogRepository.deleteById(apiCallLogId);
-    }
-
-    @Override
-    public Flux<ApiCallLog> findAll() {
-        return apiCallLogRepository.findAll();
+    public Flux<ApiCallLog> findAll(int page, int size) {
+        return apiCallLogRepository.findAll()
+                .skip((long) page * size) // salta elementos de paginas anteriores
+                .take(size); // toma los elementos necesarios
     }
 }

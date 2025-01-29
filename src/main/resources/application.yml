@@ -2,16 +2,35 @@ spring:
   application:
     name: tenpo-backend-challenge
 
-  # R2DBC is part of spring data to manage transactions with webflux
+  # R2DBC es parte de spring data para manejar transacciones con webflux
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/calculation_db
     username: user
     password: password
 
-  # Flyway allows to create tables in the db when the service starts
+  # Flyway permite crear tablas en la db cuando spring boot inicia
   flyway:
     url: jdbc:postgresql://localhost:5432/calculation_db
     enabled: true
     locations: classpath:db/migration
     user: user
     password: password
+
+  # Configuracion de REDIS
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+# Configuracion de Swagger con WebFlux
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operationsSorter: method
+    configUrl: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: Default API

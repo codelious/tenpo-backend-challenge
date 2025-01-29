@@ -16,12 +16,12 @@ import java.time.Duration;
 public class PercentageServiceImpl implements PercentageService {
 
     private final WebClient webClient;
-    private final PercentageCacheService percentageCacheService;
+    private final PercentageRedisCacheService percentageRedisCacheService;
 
     @Autowired
-    public PercentageServiceImpl(WebClient.Builder webClientBuilder, PercentageCacheService percentageCacheService) {
+    public PercentageServiceImpl(WebClient.Builder webClientBuilder, PercentageRedisCacheService percentageRedisCacheService) {
         this.webClient = webClientBuilder.baseUrl("https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io").build();
-        this.percentageCacheService = percentageCacheService;
+        this.percentageRedisCacheService = percentageRedisCacheService;
     }
 
     @Override
@@ -45,13 +45,13 @@ public class PercentageServiceImpl implements PercentageService {
     }
 
     private Mono<PercentageResponseDto> cachePercentage(PercentageResponseDto percentage) {
-        return percentageCacheService.saveCachedPercentage(Mono.just(percentage))
+        return percentageRedisCacheService.saveCachedPercentage(Mono.just(percentage))
                 .thenReturn(percentage); // Devuelve el porcentaje original tras almacenarlo
     }
 
     private Mono<PercentageResponseDto> handleErrorWithCache(Throwable error) {
         log.warn("Error al obtener porcentaje desde el servicio externo: {}. Intentando desde caché...", error.getMessage());
-        return percentageCacheService.findCachedPercentage();
+        return percentageRedisCacheService.findCachedPercentage();
     }
 
     private Throwable handleFinalError(Throwable error) {

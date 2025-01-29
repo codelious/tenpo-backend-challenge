@@ -13,14 +13,4 @@ public class ApiCallLogUtils {
         apiCallLog.setHttpStatus(apiCallLogDto.getHttpStatus());
         return apiCallLog;
     }
-
-    public static ApiCallLogDto toDto(ApiCallLog apiCallLog) {
-        ApiCallLogDto apiCallLogDto = new ApiCallLogDto();
-        apiCallLogDto.setEndpoint(apiCallLog.getEndpoint());
-        apiCallLogDto.setTimestamp(apiCallLog.getTimestamp());
-        apiCallLogDto.setResponse(apiCallLog.getResponse());
-        apiCallLogDto.setParameters(apiCallLog.getParameters());
-        apiCallLogDto.setHttpStatus(apiCallLog.getHttpStatus());
-        return apiCallLogDto;
-    }
 }

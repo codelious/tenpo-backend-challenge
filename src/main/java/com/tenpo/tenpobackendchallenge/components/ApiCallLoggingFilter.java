@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -28,6 +29,16 @@ public class ApiCallLoggingFilter implements WebFilter {
     private static final int MAX_RESPONSE_LENGTH = 1000;
     private final ApiCallLogService apiCallLogService;
 
+    private static final List<String> SWAGGER_WHITELIST = List.of(
+            "/swagger-ui.html",
+            "/swagger-ui/",
+            "/swagger-ui/index.html",
+            "/v3/api-docs",
+            "/v3/api-docs.yaml",
+            "/v3/api-docs/swagger-config",
+            "/webjars/"
+    );
+
     @Autowired
     public ApiCallLoggingFilter(ApiCallLogService apiCallLogService) {
         this.apiCallLogService = apiCallLogService;
@@ -35,13 +46,14 @@ public class ApiCallLoggingFilter implements WebFilter {
 
     @NotNull
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, @NotNull WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        // Excluir los endpoints de /api-call-log
-        // String path = request.getPath().value();
-        // if (path.startsWith("/api-call-log")) {
-        //    return chain.filter(exchange);
-        // }
+        String path = request.getPath().value();
+
+        // Excluir Swagger de la generación de logs
+        if (isSwaggerEndpoint(path)) {
+            return chain.filter(exchange);
+        }
 
         LocalDateTime timestamp = LocalDateTime.now();
         String endpoint = request.getURI().toString();
@@ -58,10 +70,15 @@ public class ApiCallLoggingFilter implements WebFilter {
                 .doOnError(throwable -> logRequest(exchange, timestamp, endpoint, parameters, capturedBody.toString()));
     }
 
+    private boolean isSwaggerEndpoint(String path) {
+        return SWAGGER_WHITELIST.stream().anyMatch(path::startsWith);
+    }
+
     @NotNull
     private ServerHttpResponse getDecoratedResponse(ServerHttpResponse originalResponse, StringBuilder capturedBody) {
         // Decorar la respuesta para capturar el body
-        ServerHttpResponse decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
+        // Si no es Flux ni Mono, procesar normalmente
+        return new ServerHttpResponseDecorator(originalResponse) {
             @NotNull
             @Override
             public Mono<Void> writeWith(@NotNull Publisher<? extends DataBuffer> body) {
@@ -75,7 +92,6 @@ public class ApiCallLoggingFilter implements WebFilter {
                 return super.writeWith(body); // Si no es Flux ni Mono, procesar normalmente
             }
         };
-        return decoratedResponse;
     }
 
     private Flux<DataBuffer> processFluxBody(Flux<? extends DataBuffer> fluxBody, StringBuilder capturedBody) {

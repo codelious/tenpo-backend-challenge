@@ -3,7 +3,7 @@
 Este repositorio contiene el código del **microservicio backend** que realiza cálculos con un porcentaje dinámico obtenido desde un servicio externo.
 
 📌 **Autor:** Rodrigo Espinoza Aguayo  
-📌 **Email:** rodrigo.espinoza.aguayo@gmail.com  
+📌 **Email:** rodrigo.espinoza.aguayo@gmail.com
 
 ---
 
@@ -16,7 +16,7 @@ Además, se implementa **Redis** para caching distribuido y **Rate Limiting** pa
 ✅ **Redis** para almacenamiento en caché  
 ✅ **Rate Limiting** (Máximo 3 solicitudes por minuto)  
 ✅ **Documentación con Swagger**  
-✅ **Preparado para Docker y Docker Compose**  
+✅ **Preparado para Docker y Docker Compose**
 
 📌 **Cálculo con porcentaje dinámico**  
 Este servicio obtiene un **porcentaje desde una API externa** para aplicarlo en el cálculo.  
@@ -42,7 +42,7 @@ Spring WebFlux es un framework reactivo que permite manejar un gran número de s
 ✅ **Alta concurrencia**: Maneja múltiples solicitudes sin necesidad de bloquear hilos, mejorando el rendimiento.  
 ✅ **Eficiencia en operaciones I/O**: Perfecto para servicios que consumen APIs externas y bases de datos.  
 ✅ **Integración con R2DBC**: Permite el acceso a bases de datos de manera no bloqueante, ideal para PostgreSQL en este caso.  
-✅ **Escalabilidad y optimización de recursos**: Uso eficiente de los recursos del sistema, lo que permite manejar más solicitudes con menos hilos.  
+✅ **Escalabilidad y optimización de recursos**: Uso eficiente de los recursos del sistema, lo que permite manejar más solicitudes con menos hilos.
 
 ---
 
@@ -108,6 +108,22 @@ percentage-api:
 
 ---
 
+## 🔹 **Variables de entorno para ejecución local**
+Si deseas ejecutar el servicio en tu entorno local, puedes configurar las siguientes variables de entorno en **IntelliJ IDEA** o cualquier otro entorno compatible:
+
+```env
+DATASOURCE_PASSWORD=password;
+DATASOURCE_R2DBC_URL=r2dbc:postgresql://localhost:5432/calculation_db;
+DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:5432/calculation_db;
+DATASOURCE_USERNAME=user;
+PERCENTAGE_API_URI=/percentage;
+PERCENTAGE_API_URL=https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io;
+REDIS_HOST=127.0.0.1;
+REDIS_PORT=6379
+```
+
+---
+
 ## ▶️ **Cómo ejecutar el servicio**
 ### **Ejecutar con Docker Compose**
 Si deseas ejecutar el microservicio junto con **PostgreSQL y Redis**, sigue estos pasos:
@@ -131,6 +147,13 @@ Si deseas ejecutar el microservicio junto con **PostgreSQL y Redis**, sigue esto
 ---
 
 ## 📡 **Endpoints de la API**
+
+Una vez levantada toda la infraestructura en local los endpoints pueden ser accedidos en:
+
+```http
+http://localhost:8080
+```
+
 La API expone los siguientes endpoints:
 
 ### 🔹 **Cálculo con porcentaje dinámico**
@@ -149,38 +172,16 @@ Realiza la suma de `num1` y `num2`, y aplica un porcentaje adicional obtenido de
 
 ---
 
-### 🔹 **Historial de llamadas a la API**
-```http
-GET /api-call-log?page=0&size=10
-```
-📌 **Descripción:**  
-Obtiene un historial paginado de todas las llamadas realizadas a la API.
+## 📖 **Colecciones de Postman**
+Para facilitar las pruebas, el proyecto incluye **colecciones de Postman** listas para importar.  
+📌 **Descarga las colecciones aquí:**  
+🔗 [Colecciones de Postman](https://github.com/codelious/tenpo-backend-challenge/tree/main/docs/postman)
 
-📌 **Ejemplo de respuesta:**
-```json
-[
-  {
-    "timestamp": "2025-01-29T12:34:56",
-    "endpoint": "/calculation?num1=10&num2=20",
-    "parameters": "num1=10&num2=20",
-    "response": "{ \"sum\": 33.0 }",
-    "httpStatus": 200
-  }
-]
-```
-
----
-
-## 🔐 **Control de tasas (Rate Limiting)**
-El microservicio impone un límite de **3 solicitudes por minuto**.  
-Si se excede este umbral, responde con un **error HTTP 429 (Too Many Requests)**.
-
-📌 **Ejemplo de respuesta cuando se excede el límite:**
-```json
-{
-  "error": "Too Many Requests: Límite de 3 solicitudes por minuto alcanzado."
-}
-```
+Para importarlas en Postman:
+1. Abre Postman.
+2. Ve a **File** > **Import**.
+3. Selecciona los archivos JSON de la carpeta `docs/postman`.
+4. Prueba los endpoints con las variables preconfiguradas.
 
 ---
 
@@ -191,15 +192,8 @@ La documentación interactiva **Swagger** está disponible en:
 
 ---
 
-## 🛑 **Cómo detener el servicio**
-Si ejecutaste el servicio con **Docker Compose**, puedes detenerlo con:
-
-```sh
-  docker-compose down
-```
-
----
-
 ## 📌 **Enlaces útiles**
 - 👉 **[Tenpo Backend Challenge Infra en GitHub](https://github.com/codelious/tenpo-backend-challenge-infra)**
 - 👉 **[Repositorio de este microservicio](https://github.com/codelious/tenpo-backend-challenge)**
+- 👉 **[Colecciones de Postman](https://github.com/codelious/tenpo-backend-challenge/tree/main/docs/postman)**
+

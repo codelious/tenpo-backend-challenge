@@ -15,6 +15,7 @@ Además, se implementa **Redis** para caching distribuido y **Rate Limiting** pa
 ✅ **Spring WebFlux** (API reactiva y no bloqueante)  
 ✅ **Redis** para almacenamiento en caché  
 ✅ **Rate Limiting** (Máximo 3 solicitudes por minuto)  
+✅ **Flyway para la creación de tablas en PostgreSQL**  
 ✅ **Documentación con Swagger**  
 ✅ **Preparado para Docker y Docker Compose**  
 
@@ -43,6 +44,13 @@ Spring WebFlux es un framework reactivo que permite manejar un gran número de s
 ✅ **Eficiencia en operaciones I/O**: Perfecto para servicios que consumen APIs externas y bases de datos.  
 ✅ **Integración con R2DBC**: Permite el acceso a bases de datos de manera no bloqueante, ideal para PostgreSQL en este caso.  
 ✅ **Escalabilidad y optimización de recursos**: Uso eficiente de los recursos del sistema, lo que permite manejar más solicitudes con menos hilos.  
+
+### **🔹 ¿Por qué Flyway?**
+Se eligió **Flyway** para la gestión de migraciones de base de datos porque:
+
+✅ **Automatización de la creación de tablas**: Se usa para la creación automática de la tabla `api_call_log`.  
+✅ **Soporte para WebFlux y R2DBC**: Como **Spring Data JPA no es compatible con WebFlux**, se necesita definir manualmente la estructura de la base de datos.  
+✅ **Mantenimiento fácil de la base de datos**: Se pueden agregar versiones de migraciones sin afectar los datos existentes.
 
 ---
 

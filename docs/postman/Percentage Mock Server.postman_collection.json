@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "f0a0cfa8-25fd-4a66-890a-d276f07eff06",
+		"name": "Percentage Mock Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16821566"
+	},
+	"item": [
+		{
+			"name": "MOCK GET PERCENTAGE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://percentage.mock.server/percentage",
+					"protocol": "http",
+					"host": [
+						"percentage",
+						"mock",
+						"server"
+					],
+					"path": [
+						"percentage"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET PERCENTAGE",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://percentage.mock.server/percentage",
+							"protocol": "http",
+							"host": [
+								"percentage",
+								"mock",
+								"server"
+							],
+							"path": [
+								"percentage"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"percentage\": 11\n}"
+				}
+			]
+		},
+		{
+			"name": "GET PERCENTAGE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://42c939fb-7574-4341-91ca-b59c0ed06ddb.mock.pstmn.io/percentage",
+					"protocol": "https",
+					"host": [
+						"42c939fb-7574-4341-91ca-b59c0ed06ddb",
+						"mock",
+						"pstmn",
+						"io"
+					],
+					"path": [
+						"percentage"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

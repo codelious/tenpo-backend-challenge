@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "a3c52458-c607-4e32-a828-e01940a46f0f",
+		"name": "Calculation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16821566"
+	},
+	"item": [
+		{
+			"name": "SUM",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/calculation?num1=10&num2=25",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"calculation"
+					],
+					"query": [
+						{
+							"key": "num1",
+							"value": "10"
+						},
+						{
+							"key": "num2",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

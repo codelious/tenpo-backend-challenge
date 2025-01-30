@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "8952afb6-6ce6-4641-b8bb-aff929d07eb8",
+		"name": "ApiCallLog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16821566"
+	},
+	"item": [
+		{
+			"name": "FIND ALL",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api-call-log?page=0&size=100",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api-call-log"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
